@@ -1,40 +1,26 @@
 {
-  "name": "wl-258",
+  "name": "island-booking",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview",
-    "check": "vue-tsc -b",
-    "lint": "eslint . --ext .ts,.vue",
-    "lint:fix": "eslint . --ext .ts,.vue --fix"
-  },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "lucide-vue-next": "^0.511.0",
-    "pinia": "^2.1.7",
-    "tailwind-merge": "^3.3.0",
-    "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@types/node": "^22.15.30",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
-    "@vitejs/plugin-vue": "^5.0.3",
-    "@vue/runtime-dom": "^3.4.15",
-    "@vue/tsconfig": "^0.7.0",
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.20.1",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
-    "typescript": "~5.3.3",
-    "unplugin-vue-dev-locator": "^1.0.0",
-    "vite": "^5.0.12",
-    "vite-plugin-trae-solo-badge": "^1.0.0",
-    "vue-tsc": "^1.8.27"
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.6.0",
+    "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "lucide-svelte": "^0.460.0"
   }
 }
