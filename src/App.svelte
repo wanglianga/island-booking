@@ -10,6 +10,9 @@
   import StatusPanel from '$components/StatusPanel.svelte'
   import RefundRules from '$components/RefundRules.svelte'
   import OrderSummary from '$components/OrderSummary.svelte'
+  import TyphoonMode from '$components/TyphoonMode.svelte'
+
+  let showTyphoonMode = $state(true)
 
   let roomCards = $derived(
     roomTypes.map((rt) => {
@@ -81,36 +84,61 @@
   </div>
 
   <main class="max-w-7xl mx-auto px-4 pb-24">
-    <div class="flex flex-col lg:flex-row gap-6">
-      <div class="flex-1 min-w-0 space-y-6">
-        <DateSelector />
-        <section>
-          <h2 class="text-lg font-serif font-semibold text-ocean-800 mb-3">选择房型</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {#each roomCards as card (card.roomType.id)}
-              <RoomTypeCard
-                roomType={card.roomType}
-                isSelected={card.isSelected}
-                isAvailable={card.isAvailable}
-                hasRoomChange={card.hasRoomChange}
-                changeToRoomName={card.changeToRoomName}
-                onselect={() => selectRoom(card.roomType.id)}
-              />
-            {/each}
-          </div>
-        </section>
-        <GuestCounter />
-        <FerrySchedule />
-        <ShuttleCard />
-        <ActivityCard />
-        <RefundRules />
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors {!showTyphoonMode
+            ? 'bg-ocean-500 text-white'
+            : 'bg-white text-ocean-600 border border-ocean-200 hover:bg-ocean-50'}"
+          onclick={() => (showTyphoonMode = false)}
+        >
+          预订中心
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 {showTyphoonMode
+            ? 'bg-coral-500 text-white'
+            : 'bg-white text-coral-600 border border-coral-200 hover:bg-coral-50'}"
+          onclick={() => (showTyphoonMode = true)}
+        >
+          🌪️ 台风停航模式
+        </button>
       </div>
-      <aside class="lg:w-80 shrink-0">
-        <div class="lg:sticky lg:top-4 space-y-4">
-          <StatusPanel />
-        </div>
-      </aside>
     </div>
+
+    {#if showTyphoonMode}
+      <TyphoonMode />
+    {:else}
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-1 min-w-0 space-y-6">
+          <DateSelector />
+          <section>
+            <h2 class="text-lg font-serif font-semibold text-ocean-800 mb-3">选择房型</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {#each roomCards as card (card.roomType.id)}
+                <RoomTypeCard
+                  roomType={card.roomType}
+                  isSelected={card.isSelected}
+                  isAvailable={card.isAvailable}
+                  hasRoomChange={card.hasRoomChange}
+                  changeToRoomName={card.changeToRoomName}
+                  onselect={() => selectRoom(card.roomType.id)}
+                />
+              {/each}
+            </div>
+          </section>
+          <GuestCounter />
+          <FerrySchedule />
+          <ShuttleCard />
+          <ActivityCard />
+          <RefundRules />
+        </div>
+        <aside class="lg:w-80 shrink-0">
+          <div class="lg:sticky lg:top-4 space-y-4">
+            <StatusPanel />
+          </div>
+        </aside>
+      </div>
+    {/if}
   </main>
   <OrderSummary />
 </div>

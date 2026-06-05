@@ -344,3 +344,129 @@ export const refundRules: RefundRule[] = [
     penaltyPercent: 0,
   },
 ]
+
+export interface BookingGuest {
+  name: string
+  phone: string
+  idCard?: string
+}
+
+export interface BookingActivity {
+  activitySlotKey: string
+  activityId: string
+  activityName: string
+  date: string
+  time: string
+  guests: number
+}
+
+export interface Booking {
+  id: string
+  orderNo: string
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'suspended'
+  guestInfo: BookingGuest
+  checkInDate: string
+  checkOutDate: string
+  nights: number
+  roomTypeId: string
+  roomTypeName: string
+  adults: number
+  children: number
+  outboundFerryId?: string
+  outboundFerryTime?: string
+  returnFerryId?: string
+  returnFerryTime?: string
+  outboundShuttleId?: string
+  returnShuttleId?: string
+  activities: BookingActivity[]
+  totalPrice: number
+  createdAt: string
+  suspensionReason?: string
+  typhoonAffected?: boolean
+  typhoonProcessStatus?: 'pending' | 'postponed' | 'refunded' | 'rescheduled'
+}
+
+function generateBookings(): Booking[] {
+  const today = new Date()
+  const dates: string[] = []
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(today)
+    d.setDate(d.getDate() + i)
+    dates.push(d.toISOString().split('T')[0])
+  }
+
+  const guestNames = ['张三', '李四', '王五', '赵六', '陈七', '刘八', '周九', '吴十']
+  const bookings: Booking[] = []
+
+  for (let i = 0; i < 8; i++) {
+    const checkInIdx = i < 4 ? 3 : (i % 3)
+    const checkIn = dates[checkInIdx]
+    const nights = i % 3 + 1
+    const checkOutDate = new Date(checkIn)
+    checkOutDate.setDate(checkOutDate.getDate() + nights)
+    const checkOut = checkOutDate.toISOString().split('T')[0]
+
+    const hasActivities = i % 2 === 0
+    const activities: BookingActivity[] = hasActivities
+      ? [
+          {
+            activitySlotKey: `act-snorkeling-${checkIn}-09:00`,
+            activityId: 'act-snorkeling',
+            activityName: '珊瑚浮潜',
+            date: checkIn,
+            time: '09:00',
+            guests: 2,
+          },
+        ]
+      : []
+
+    const outboundFerryId = checkInIdx < 7 ? `f-out-${checkInIdx}` : undefined
+    const returnFerryId = checkInIdx < 7 ? `f-ret-${checkInIdx + nights}` : undefined
+
+    bookings.push({
+      id: `booking-${i + 1}`,
+      orderNo: `HB${202506000 + i}`,
+      status: i < 6 ? 'confirmed' : 'pending',
+      guestInfo: {
+        name: guestNames[i],
+        phone: `138****${1000 + i}`,
+      },
+      checkInDate: checkIn,
+      checkOutDate: checkOut,
+      nights,
+      roomTypeId: i % 2 === 0 ? 'rt-seaview' : 'rt-garden',
+      roomTypeName: i % 2 === 0 ? '海景大床房' : '花园双床房',
+      adults: 2,
+      children: i % 3,
+      outboundFerryId,
+      outboundFerryTime: outboundFerryId ? '08:30' : undefined,
+      returnFerryId,
+      returnFerryTime: returnFerryId ? '11:00' : undefined,
+      outboundShuttleId: outboundFerryId ? `s-out-${checkInIdx}` : undefined,
+      returnShuttleId: returnFerryId ? `s-ret-${checkInIdx + nights}` : undefined,
+      activities,
+      totalPrice: 1200 + i * 200,
+      createdAt: new Date(today.getTime() - i * 86400000).toISOString(),
+      typhoonAffected: checkInIdx === 3,
+      typhoonProcessStatus: checkInIdx === 3 ? 'pending' : undefined,
+    })
+  }
+
+  return bookings
+}
+
+export const mockBookings: Booking[] = generateBookings()
+
+export interface TyphoonSuspension {
+  date: string
+  reason: string
+  affectedDirection: 'all' | 'outbound' | 'return'
+}
+
+export const mockTyphoonSuspensions: TyphoonSuspension[] = [
+  {
+    date: dates[3],
+    reason: '台风预警，全天停航',
+    affectedDirection: 'all',
+  },
+]
